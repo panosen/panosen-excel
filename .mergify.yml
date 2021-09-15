@@ -2,7 +2,7 @@ pull_request_rules:
   - name: automatic merge for dependeabot
     conditions:
       - and:
-          - "author=dependabot"
+          - "author=dependabot[bot]"
           - or:
               - "title~=Bump MSTest.TestAdapter from"
               - "title~=Bump MSTest.TestFramework from"
