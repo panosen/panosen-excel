@@ -4,6 +4,8 @@ pull_request_rules:
       - and:
           - "author=dependabot[bot]"
           - or:
+              - "title~=Bump coverlet.collector from"
+              - "title~=Bump Microsoft.NET.Test.Sdk from"
               - "title~=Bump MSTest.TestAdapter from"
               - "title~=Bump MSTest.TestFramework from"
     actions:
