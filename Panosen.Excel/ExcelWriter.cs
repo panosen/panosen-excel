@@ -57,7 +57,7 @@ namespace Panosen.Excel
                 }
             }
 
-            workbook.Write(new FileStream(filePath, FileMode.CreateNew));
+            workbook.Write(new FileStream(filePath, FileMode.CreateNew), false);
         }
 
         private static void WriteHeader(IRow headerRow, List<ColumnInfo> columnInfoList)
