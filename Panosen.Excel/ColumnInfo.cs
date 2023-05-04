@@ -21,5 +21,10 @@ namespace Panosen.Excel
         /// ColumnAttribute
         /// </summary>
         public ExcelColumnAttribute ColumnAttribute { get; set; }
+
+        /// <summary>
+        /// 列顺序，从0开始
+        /// </summary>
+        public int? ColumnIndex { get; set; }
     }
 }

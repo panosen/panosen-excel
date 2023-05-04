@@ -45,7 +45,12 @@ namespace Panosen.Excel
 
                 foreach (var columnInfo in columnInfoList)
                 {
-                    var cell = row.GetCell(columnInfo.ColumnAttribute.ColumnIndex);
+                    if (columnInfo.ColumnIndex == null)
+                    {
+                        continue;
+                    }
+
+                    var cell = row.GetCell(columnInfo.ColumnIndex.Value);
 
                     SetPropertyValue(entity, columnInfo, cell);
                 }
@@ -62,7 +67,7 @@ namespace Panosen.Excel
                 {
                     if (row.GetCell(i, MissingCellPolicy.RETURN_BLANK_AS_NULL).StringCellValue.Equals(columnInfo.ColumnAttribute.ColumnName))
                     {
-                        columnInfo.ColumnAttribute.ColumnIndex = i;
+                        columnInfo.ColumnIndex = i;
                         break;
                     }
                 }
