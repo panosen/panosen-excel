@@ -8,6 +8,7 @@ pull_request_rules:
               - "title~=Bump Microsoft.NET.Test.Sdk from"
               - "title~=Bump MSTest.TestAdapter from"
               - "title~=Bump MSTest.TestFramework from"
+              - "title~=Bump Microsoft.CodeAnalysis.NetAnalyzers from"
     actions:
       merge:
         method: rebase
