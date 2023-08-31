@@ -3,6 +3,7 @@ using NPOI.XSSF.UserModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -19,45 +20,54 @@ namespace Panosen.Excel
         /// <summary>
         /// 把实体写入Excel
         /// </summary>
-        public static void WriteEntityList<T>(string filePath, string tableName, List<T> entityList) where T : class, new()
+        public static void WriteEntityList<T>(string filePath, string tableName, IEnumerable<T> entityList) where T : class, new()
         {
             var type = typeof(T);
 
             var attributes = (ExcelTableAttribute[])type.GetCustomAttributes(typeof(ExcelTableAttribute), false);
             if (attributes.Length == 0)
             {
-                throw new Exception($"ExcelTableAttribute must be defined on type {type.FullName}");
+                return;
             }
 
-            IWorkbook workbook = new XSSFWorkbook();
-
-            ISheet workSheet = workbook.CreateSheet(tableName);
-
-            var columnInfoList = GetColumnInfos(typeof(T));
-
-            var rowIndex = 0;
-
-            WriteHeader(workSheet.CreateRow(rowIndex++), columnInfoList);
-
-            foreach (var entity in entityList)
+            if (entityList == null)
             {
-                var row = workSheet.CreateRow(rowIndex++);
-                var columnIndex = 0;
-                foreach (var columnInfo in columnInfoList)
+                return;
+            }
+
+            using (IWorkbook workbook = new XSSFWorkbook())
+            {
+                ISheet workSheet = workbook.CreateSheet(tableName);
+
+                var columnInfoList = GetColumnInfos(typeof(T));
+
+                var rowIndex = 0;
+
+                WriteHeader(workSheet.CreateRow(rowIndex++), columnInfoList);
+
+                foreach (var entity in entityList)
                 {
-                    var cell = row.CreateCell(columnIndex++);
-
-                    var value = columnInfo.PropertyInfo.GetValue(entity, null);
-                    if (value == null)
+                    var row = workSheet.CreateRow(rowIndex++);
+                    var columnIndex = 0;
+                    foreach (var columnInfo in columnInfoList)
                     {
-                        continue;
-                    }
+                        var cell = row.CreateCell(columnIndex++);
 
-                    WriteCell(cell, columnInfo, value);
+                        var value = columnInfo.PropertyInfo.GetValue(entity, null);
+                        if (value == null)
+                        {
+                            continue;
+                        }
+
+                        WriteCell(cell, columnInfo, value);
+                    }
+                }
+
+                using (var fileStream = new FileStream(filePath, FileMode.CreateNew))
+                {
+                    workbook.Write(fileStream, false);
                 }
             }
-
-            workbook.Write(new FileStream(filePath, FileMode.CreateNew), false);
         }
 
         private static void WriteHeader(IRow headerRow, List<ColumnInfo> columnInfoList)
@@ -82,7 +92,7 @@ namespace Panosen.Excel
                 case "System.Double":
                 case "System.Decimal":
                     {
-                        var doubleValue = Convert.ToDouble(value);
+                        var doubleValue = Convert.ToDouble(value, CultureInfo.InvariantCulture);
                         cell.SetCellValue(doubleValue);
                     }
                     break;
