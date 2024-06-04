@@ -14,8 +14,6 @@ namespace Panosen.Excel
         /// <summary>
         /// GetColumnInfos
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
         protected static List<ColumnInfo> GetColumnInfos(Type type)
         {
             List<ColumnInfo> columnInfoList = new List<ColumnInfo>();

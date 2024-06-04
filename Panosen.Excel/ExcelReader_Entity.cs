@@ -14,17 +14,13 @@ namespace Panosen.Excel
     /// <summary>
     /// ExcelReader
     /// </summary>
-    public class ExcelReader : ExcelHelper
+    public partial class ExcelReader : ExcelHelper
     {
-        private static readonly DateTime DefaultDay = new DateTime(1900, 1, 1);
+        //private static readonly DateTime DefaultDay = new DateTime(1900, 1, 1);
 
         /// <summary>
         /// ReadEntityList
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="inputFilePath"></param>
-        /// <param name="tableName"></param>
-        /// <returns></returns>
         public static List<T> ReadEntityList<T>(string inputFilePath, string tableName) where T : class, new()
         {
             var columnInfoList = GetColumnInfos(typeof(T));
@@ -65,7 +61,7 @@ namespace Panosen.Excel
             {
                 foreach (var columnInfo in columnInfoList)
                 {
-                    if (row.GetCell(i, MissingCellPolicy.RETURN_BLANK_AS_NULL).StringCellValue.Equals(columnInfo.ColumnAttribute.ColumnName))
+                    if (columnInfo.ColumnAttribute.ColumnName.Equals(row.GetCell(i, MissingCellPolicy.CREATE_NULL_AS_BLANK).StringCellValue))
                     {
                         columnInfo.ColumnIndex = i;
                         break;
@@ -130,12 +126,12 @@ namespace Panosen.Excel
                         {
                             case "System.Int32":
                                 {
-                                    propertyInfo.SetValue(entity, Convert.ToInt32(cell.NumericCellValue), null);
+                                    propertyInfo.SetValue(entity, Convert.ToInt32(cell.StringCellValue), null);
                                 }
                                 break;
                             case "System.Int64":
                                 {
-                                    propertyInfo.SetValue(entity, Convert.ToInt64(cell.NumericCellValue), null);
+                                    propertyInfo.SetValue(entity, Convert.ToInt64(cell.StringCellValue), null);
                                 }
                                 break;
                             case "System.String":

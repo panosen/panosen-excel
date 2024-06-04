@@ -36,6 +36,8 @@ namespace Panosen.Excel.MSTest
                 Assert.AreEqual($"Book{i}", actual[i].Name);
             }
 
+            var mapList = ExcelReader.ReadMapList(path, tableName);
+            Assert.AreEqual(3, mapList.Count);
         }
     }
 }
